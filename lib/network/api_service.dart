@@ -22,8 +22,8 @@ class APIService {
   static Dio createDio() {
     var dio = Dio(BaseOptions(
       baseUrl: AppConstants.baseURl,
-      receiveTimeout: 30000, // 30 seconds
-      connectTimeout: 30000,
+      receiveTimeout: 15000,
+      connectTimeout: 30000, // 30 seconds
       sendTimeout: 15000,
     ));
 

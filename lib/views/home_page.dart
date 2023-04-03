@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proshore_even_manager_app/provider/events_provider.dart';
 import 'package:proshore_even_manager_app/util/k_colors.dart';
 import 'package:proshore_even_manager_app/views/event_list_item.dart';
+import 'package:proshore_even_manager_app/widgets/my_snackbar.dart';
 import 'package:proshore_even_manager_app/widgets/text_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    cityNameTextController.text = "Kathmandu";
+    // cityNameTextController.text = "Kathmandu";
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(16),
@@ -52,7 +53,9 @@ class _HomePageState extends State<HomePage> {
         style: CustomTextStyle.myContentPrimaryTextStyle,
         cursorColor: Colors.grey,
         keyboardType: TextInputType.streetAddress,
-        onChanged: (value) {},
+        onChanged: (value) {
+          eventProvider.filterEventsByAddress(value);
+        },
         // onFieldSubmitted: (value) {
         //   if (eventProvider.validateFilter(context, value)) {
         //     eventProvider.getEventsByAddress(context, value);
@@ -115,6 +118,9 @@ class _HomePageState extends State<HomePage> {
                   return EventListItem(provider.filterEvents[index]);
                 }),
           );
+        }
+        if(provider.pageStatus==STATUS.error){
+          provider.loadDummyEvents(context);
         }
         return Container();
       },
