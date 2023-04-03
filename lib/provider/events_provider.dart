@@ -31,8 +31,14 @@ class EventsProvider extends ChangeNotifier {
 
   set pageStatus(STATUS value) {
     _pageStatus = value;
-    print("aashis $pageStatus");
     notifyListeners();
+  }
+
+
+  List<ResponseEvents> get events => _events;
+
+  set events(List<ResponseEvents> value) {
+    _events = value;
   }
 
   List<ResponseEvents> get filterEvents => _filterEvents;
@@ -51,21 +57,29 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<dynamic> getEventsByAddress(
-      BuildContext context, String address) async {
+      BuildContext context, {
+        String? address,
+        String? startDate,
+        String? endDate
+  }) async {
     if (pageStatus != STATUS.loading) {
       pageStatus = STATUS.loading;
     }
-    dynamic response = await repository.events(address: address);
+    dynamic response = await repository.events(address: address,startDate: startDate,endate: endDate);
+    // dynamic response=await repository.eventsFromJson();
     if (response is List<dynamic>) {
-      for (var data in response) {
+      for(var data in response){
         _events.add(ResponseEvents.fromJson(data));
       }
       _filterEvents = _events;
       pageStatus = STATUS.success;
     } else if (response is DioError) {
-      errorMessage = response.message;
+      errorMessage = response.toString();
       pageStatus = STATUS.error;
+      MySnackBar(context: context).show(errorMessage);
+
     }
+
 
     return true;
   }

@@ -20,7 +20,7 @@ class AppRouter {
       debugLogDiagnostics: true,
       routes: [
         GoRoute(
-          path: '/',
+          path: '/s',
           name: AppRouteName.splash,
           pageBuilder: (context, state) {
             return MaterialPage(
@@ -36,7 +36,7 @@ class AppRouter {
           },
         ),
         GoRoute(
-          path: '/home',
+          path: '/',
           name: AppRouteName.home,
           builder: (context, state) {
             return HomePage();

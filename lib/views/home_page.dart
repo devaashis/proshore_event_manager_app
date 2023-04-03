@@ -20,30 +20,29 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     eventProvider = Provider.of<EventsProvider>(context, listen: false);
+    eventProvider.getEventsByAddress(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    cityNameTextController.text="Kathmandu";
+    cityNameTextController.text = "Kathmandu";
     return Scaffold(
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 5.h,
-              ),
-              buildSearchBar(),
-              buildListView(),
-            ],
-          ),
+      body: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 5.h,
+            ),
+            buildSearchBar(context),
+            buildListView(context),
+          ],
         ),
       ),
     );
   }
 
-  buildSearchBar() {
+  buildSearchBar(BuildContext context) {
     return Container(
       width: double.infinity,
       height: 60,
@@ -77,7 +76,7 @@ class _HomePageState extends State<HomePage> {
               if (eventProvider.validateFilter(
                   context, cityNameTextController.text)) {
                 eventProvider.getEventsByAddress(
-                    context, cityNameTextController.text);
+                    context, address: cityNameTextController.text);
               }
             },
             icon: const Icon(
@@ -92,22 +91,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  buildListView(){
-    Consumer<EventsProvider>(
+  buildListView(BuildContext context) {
+    return Consumer<EventsProvider>(
       builder: (context, provider, child) {
         if (provider.pageStatus == STATUS.loading) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,));
-        }else  if (provider.pageStatus == STATUS.success) {
-          return ListView.builder(
-            shrinkWrap: true,
-              itemCount: provider.filterEvents.length,
-              itemBuilder: (context, index) {
-                return EventListItem(provider.filterEvents[index]);
-              });
+          return Column(
+            children: [
+              SizedBox(
+                height: 40.h,
+              ),
+              CircularProgressIndicator(
+                color: AppColors.primaryColor,
+              ),
+            ],
+          );
+        }
+        else if (provider.pageStatus == STATUS.success) {
+          return Expanded(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: provider.filterEvents.length,
+                itemBuilder: (context, index) {
+                  return EventListItem(provider.filterEvents[index]);
+                }),
+          );
         }
         return Container();
       },
     );
-    return Container();
   }
 }
